@@ -56,7 +56,26 @@ int main() {
 ### Not everything is a system call
 4. Take your program from "Writing to files" and replace `write()` with `printf()`.
    - Make sure to print to the file instead of standard out!
+```C
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <fcntl.h>
+
+int main() {
+	mode_t mode = S_IRUSR | S_IRUSR;
+	close(1);
+	int fildes = open("hello_world.txt", O_CREAT | O_TRUNC | O_RDWR , mode);
+	printf("Hi! My name is Mohammad Zayyad\n");
+	close(fildes);
+	return 0;
+}
+```
+
 5. What are some differences between `write()` and `printf()`?
+
+Write() has the ability to specify which output stream you want to write to, whether that a file, stdout, or the error logs. For write(), you also need to declare the number of bytes you want to write out, whereas printf() does that for you. Additionally, with printf() you can print variable values and it doesn't need to be constant. In order to use printf() to print to a file you need to close the main output stream then open the file so that printf() when printing to output 1 will print to the file. 
 
 ## Chapter 2
 
