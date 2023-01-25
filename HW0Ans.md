@@ -83,9 +83,23 @@ Sizing up C types and their limits, `int` and `char` arrays, and incrementing po
 
 ### Not all bytes are 8 bits?
 1. How many bits are there in a byte?
+```C
+There are at least 8 but the amount is based on the architecture
+```
+
 2. How many bytes are there in a `char`?
+
+```C
+One
+```
+
 3. How many bytes the following are on your machine?
    - `int`, `double`, `float`, `long`, and `long long`
+
+```C
+Respectively: 4, 8, 4, 4, 8
+```
+
 ### Follow the int pointer
 4. On a machine with 8 byte integers:
 ```C
@@ -95,8 +109,17 @@ int main(){
 ```
 If the address of data is `0x7fbd9d40`, then what is the address of `data+2`?
 
+```C
+0x7fbd950
+```
+
 5. What is `data[3]` equivalent to in C?
    - Hint: what does C convert `data[3]` to before dereferencing the address?
+
+```C
+data + 3*sizeof(int)
+```
+
 
 ### `sizeof` character arrays, incrementing pointers
   
@@ -107,10 +130,32 @@ Remember, the type of a string constant `"abc"` is an array.
 char *ptr = "hello";
 *ptr = 'J';
 ```
+```C
+Because you're attempting to change the value of a constant
+```
+
 7. What does `sizeof("Hello\0World")` return?
+
+```C
+12
+```
+
 8. What does `strlen("Hello\0World")` return?
+```C
+5
+```
+
 9. Give an example of X such that `sizeof(X)` is 3.
+```C
+char* X = "ab";
+
+```
+
 10. Give an example of Y such that `sizeof(Y)` might be 4 or 8 depending on the machine.
+
+```C
+long Y = 0;
+```
 
 ## Chapter 3
 
@@ -118,7 +163,16 @@ Program arguments, environment variables, and working with character arrays (str
 
 ### Program arguments, `argc`, `argv`
 1. What are two ways to find the length of `argv`?
+
+```C
+using argc and iterative through argv until you reach a null char*
+```
+
 2. What does `argv[0]` represent?
+```C
+The execution call
+```
+
 ### Environment Variables
 3. Where are the pointers to environment variables stored (on the stack, the heap, somewhere else)?
 ### String searching (strings are just char arrays)
