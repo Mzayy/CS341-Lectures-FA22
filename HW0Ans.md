@@ -169,12 +169,18 @@ using argc and iterative through argv until you reach a null char*
 ```
 
 2. What does `argv[0]` represent?
+
 ```C
 The execution call
 ```
 
 ### Environment Variables
 3. Where are the pointers to environment variables stored (on the stack, the heap, somewhere else)?
+
+```C
+They are set somewhere else above the stack.
+```
+
 ### String searching (strings are just char arrays)
 4. On a machine where pointers are 8 bytes, and with the following code:
 ```C
@@ -183,9 +189,19 @@ char array[] = "Hello";
 ```
 What are the values of `sizeof(ptr)` and `sizeof(array)`? Why?
 
+```C
+8 and 6, because the ptr is an 8 byte pointer, and array[] has  5 characters plus the null character
+```
+
+
 ### Lifetime of automatic variables
 
 5. What data structure manages the lifetime of automatic variables?
+
+```C
+Stack
+```
+
 
 ## Chapter 4
 
@@ -193,30 +209,126 @@ Heap and stack memory, and working with structs
 
 ### Memory allocation using `malloc`, the heap, and time
 1. If I want to use data after the lifetime of the function it was created in ends, where should I put it? How do I put it there?
+
+```C
+Put it on the heap by manually allocating memory, or make it a static global variable
+```
+
 2. What are the differences between heap and stack memory?
+
+```C
+Heap is more permanent and you control the lifetime of the variable but you have to make sure that you deallocate the memory. The stack has a limited lifetime and is automatically deallocated after the variable goes out of scope.
+```
+
 3. Are there other kinds of memory in a process?
+
+```C
+Yes, one of them is environment memory
+```
+
 4. Fill in the blank: "In a good C program, for every malloc, there is a ___".
+
+```C
+free
+```
+
 ### Heap allocation gotchas
 5. What is one reason `malloc` can fail?
+
+```C
+There isn't enough space to satisfy the malloc
+```
+
 6. What are some differences between `time()` and `ctime()`?
+
+```C
+time() gives the system time in an unreadable version and varible type of time_t and ctime() returns the time as a string when given a time_t value readable version.
+```
+
 7. What is wrong with this code snippet?
 ```C
 free(ptr);
 free(ptr);
 ```
+
+```C
+Double free, attempting to free a null pointer
+```
+
 8. What is wrong with this code snippet?
 ```C
 free(ptr);
 printf("%s\n", ptr);
 ```
+
+```C
+Attempting to use a null pointer (using memory after it's been freed) 
+```
+
 9. How can one avoid the previous two mistakes? 
+
+
+```C
+Set the pointer to NULL value after freeing the memory
+```
+
 ### `struct`, `typedef`s, and a linked list
 10. Create a `struct` that represents a `Person`. Then make a `typedef`, so that `struct Person` can be replaced with a single word. A person should contain the following information: their name (a string), their age (an integer), and a list of their friends (stored as a pointer to an array of pointers to `Person`s).
+
+```C
+typedef struct Person person;
+
+struct Person{
+	char* name;
+	int age; 
+	person* (*friends)[];
+};
+```
+
 11. Now, make two persons on the heap, "Agent Smith" and "Sonny Moore", who are 128 and 256 years old respectively and are friends with each other.
+
+```C
+int main() {
+	person* agsm = (person*)malloc(sizeof(person));
+	person* somo = (person*)malloc(sizeof(person));
+	agsm->name = "Agent Smith";
+	agsm->age = 128;
+	somo->name = "Sonny Moore";
+	somo->age = 256;
+	person a[] = {somo};
+	person (*b)[] = &a;
+	person c[] = {agsm};
+	person (*d)[] = &c;
+	agsm->friends = &d;
+	somo->friends = &b;
+	free(agsm);
+	free(somo);
+	return 0;
+}
+```
+
 ### Duplicating strings, memory allocation and deallocation of structures
 Create functions to create and destroy a Person (Person's and their names should live on the heap).
 12. `create()` should take a name and age. The name should be copied onto the heap. Use malloc to reserve sufficient memory for everyone having up to ten friends. Be sure initialize all fields (why?).
+
+```C
+void create(char* name1, int age1){
+	person* cur = (person*)malloc(sizeof(person));
+	cur->name = name1;
+	cur->age = age1;
+	cur->friends = malloc(10*sizeof(person*));
+}
+```
+
 13. `destroy()` should free up not only the memory of the person struct, but also free all of its attributes that are stored on the heap. Destroying one person should not destroy any others.
+
+```C
+void destroy(person* p){
+	free(p->friends);
+	free(p);
+}
+```
+
 
 ## Chapter 5 
 
@@ -224,12 +336,46 @@ Text input and output and parsing using `getchar`, `gets`, and `getline`.
 
 ### Reading characters, trouble with gets
 1. What functions can be used for getting characters from `stdin` and writing them to `stdout`?
+
+```C
+getchar() and putchar(char)
+```
+
 2. Name one issue with `gets()`.
+
+```C
+If you exceed the number of memory allocated for the buffer then it may go past the end of the memory and change other unintended values.
+```
+
 ### Introducing `sscanf` and friends
 3. Write code that parses the string "Hello 5 World" and initializes 3 variables to "Hello", 5, and "World".
+
+```C
+void destroy(person* p){
+	free(p->friends);
+	free(p);
+}
+```
+
 ### `getline` is useful
 4. What does one need to define before including `getline()`?
+
+```C
+void destroy(person* p){
+	free(p->friends);
+	free(p);
+}
+```
+
 5. Write a C program to print out the content of a file line-by-line using `getline()`.
+
+```C
+void destroy(person* p){
+	free(p->friends);
+	free(p);
+}
+```
+
 
 ## C Development
 
